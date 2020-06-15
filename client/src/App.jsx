@@ -1,43 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  Heading,
-  SegmentedControl,
-  Spinner,
-  Stack,
-  Text,
-  TextArea,
-} from 'gestalt';
-import ScoreBar from './ScoreBar';
+import React, { useState } from 'react';
+import { Box, Button, Heading, TextArea, Text } from 'gestalt';
+import AnalysisContainer from './AnalysisContainer';
 import axios from 'axios';
 import 'gestalt/dist/gestalt.css';
 
 const baseURL = 'http://localhost:8080';
 
 function App() {
-  const [itemIndex, setItemIndex] = useState(0);
   const [text, setText] = useState('');
   const [overallScore, setOverallScore] = useState(null);
   const [sentences, setSentences] = useState([]);
-  const [filteredSentences, setFilteredSentences] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const segmentItems = ['overall', 'positive', 'neutral', 'negative'];
-  const sentimentEmojis = ['😃', '😐', '😔'];
-
-  useEffect(() => {
-    if (itemIndex > 0) {
-      setFilteredSentences(
-        sentences.filter(
-          (sentence) =>
-            sentence.sentiment === segmentItems[itemIndex].toLowerCase()
-        )
-      );
-    } else {
-      setFilteredSentences(sentences);
-    }
-  }, [itemIndex, sentences]);
 
   const getSentiment = () => {
     setIsLoading(true);
@@ -60,7 +33,7 @@ function App() {
 
   return (
     <Box margin={12} minWidth={275}>
-      <Box marginBottom={4} marginLeft={12}>
+      <Box marginBottom={4}>
         <Heading size="md">Multilingual NLP</Heading>
       </Box>
 
@@ -85,54 +58,15 @@ function App() {
           </Box>
         </Box>
 
-        <Box column={5} minWidth={365} paddingY={6}>
-          <SegmentedControl
-            items={segmentItems}
-            selectedItemIndex={itemIndex}
-            onChange={({ activeIndex }) => setItemIndex(activeIndex)}
-          />
-          {itemIndex === 0 && overallScore && !isLoading && (
-            <Box marginTop={6}>
-              <Heading size="sm">Text Sentiment</Heading>
-              <ScoreBar score={overallScore} />
-            </Box>
-          )}
-          <br />
-          <Spinner show={isLoading} accessibilityLabel="Example spinner" />
-          <Box
-            display="flex"
-            wrap
-            justifyContent="evenly"
-            maxHeight={375}
-            overflow="scroll"
-          >
-            {!isLoading &&
-              filteredSentences.map((sentence, index) => (
-                <Box
-                  key={index}
-                  borderSize="sm"
-                  paddingX={2}
-                  paddingY={3}
-                  rounding={3}
-                  column={5}
-                  minWidth={200}
-                  marginBottom={3}
-                >
-                  <Heading size="md" align="center">
-                    {
-                      sentimentEmojis[
-                        segmentItems.indexOf(sentence.sentiment) - 1
-                      ]
-                    }
-                  </Heading>
-                  <ScoreBar score={sentence.confidenceScores} />
-                  <Stack alignItems="center" gap={2}>
-                    <Text>{sentence.text}</Text>
-                  </Stack>
-                </Box>
-              ))}
-          </Box>
-        </Box>
+        <AnalysisContainer
+          isLoading={isLoading}
+          overallScore={overallScore}
+          sentences={sentences}
+        />
+      </Box>
+
+      <Box justifyContent="end">
+        <Text align="right">powered by Nexxt Intelligence</Text>
       </Box>
     </Box>
   );
