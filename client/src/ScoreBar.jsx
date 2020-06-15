@@ -10,30 +10,41 @@ const Section = ({ children, title }) => (
   </Box>
 );
 
+const Bar = ({ color, column, value, textColor = 'white' }) => (
+  <Box column={column} color={color} minWidth={50}>
+    <Text align="center" color={textColor} size="sm">
+      {value}%
+    </Text>
+  </Box>
+);
+
 function ScoreBar(props) {
   const { positive, neutral, negative } = props.score;
 
   return (
-    <Section title="Text Sentiment">
+    <Section>
       <Box display="flex" justifyContent="center">
         {positive > 0 && (
-          <Box column={Math.ceil(positive * 10)} color="green">
-            <Text align="center" color="white">
-              {Math.round(positive * 100)}%
-            </Text>
-          </Box>
+          <Bar
+            color="green"
+            column={Math.ceil(positive * 10)}
+            value={Math.round(positive * 100)}
+          />
         )}
         {neutral > 0 && (
-          <Box column={Math.ceil(neutral * 10)} color="lightGray">
-            <Text align="center">{Math.round(neutral * 100)}%</Text>
-          </Box>
+          <Bar
+            color="lightGray"
+            textColor="darkGray"
+            column={Math.ceil(neutral * 10)}
+            value={Math.round(neutral * 100)}
+          />
         )}
         {negative > 0 && (
-          <Box column={Math.ceil(negative * 10)} color="red">
-            <Text align="center" color="white">
-              {Math.round(negative * 100)}%
-            </Text>
-          </Box>
+          <Bar
+            color="red"
+            column={Math.ceil(negative * 10)}
+            value={Math.round(negative * 100)}
+          />
         )}
       </Box>
     </Section>
