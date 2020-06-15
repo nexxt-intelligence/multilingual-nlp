@@ -16,8 +16,12 @@ function App() {
     setIsLoading(true);
 
     axios.post(`${baseURL}/translate`, { text }).then(({ data }) => {
+      const translatedData = data
+        .map((obj) => obj.translations[0].text)
+        .reduce((str, translatedText) => (str += `${translatedText}\n`));
+
       axios
-        .post(`${baseURL}/sentiment`, { text: data[0].translations[0].text })
+        .post(`${baseURL}/sentiment`, { text: translatedData })
         .then(({ data }) => {
           if (data.length > 0) {
             setOverallScore(data[0].confidenceScores);

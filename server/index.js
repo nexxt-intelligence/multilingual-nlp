@@ -21,7 +21,8 @@ function normalizeData({ text }) {
 
 app.post('/translate', (req, res) => {
   const { text } = req.body;
-  const dataToTranslate = [{ text }];
+  const dataArray = text.split('\n');
+  const dataToTranslate = dataArray.map((text) => ({ text }));
 
   axios
     .post(process.env.AZURE_TRANSLATOR_URL, dataToTranslate, {
